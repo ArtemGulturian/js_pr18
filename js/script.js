@@ -52,9 +52,9 @@ window.addEventListener('DOMContentLoaded', () => {
             minutes = 0;
             seconds = 0;
         } else {
-            days = Math.floor(t / (1000 * 60 * 60 * 24)),
-            hours = Math.floor((t / (1000 * 60 * 60) % 24)),
-            minutes = Math.floor((t / 1000 / 60) % 60),
+            days = Math.floor(t / (1000 * 60 * 60 * 24));
+            hours = Math.floor((t / (1000 * 60 * 60) % 24));
+            minutes = Math.floor((t / 1000 / 60) % 60);
             seconds = Math.floor((t / 1000) % 60);
         }
         
@@ -77,11 +77,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function setClock(selector, endtime) {
         const timer = document.querySelector(selector),
-        days = timer.querySelector('#days'),
-        hours = timer.querySelector('#hours'),
-        minutes = timer.querySelector('#minutes'),
-        seconds = timer.querySelector('#seconds'),
-        timeInterval = setInterval(updateClock, 1000);
+              days = timer.querySelector('#days'),
+              hours = timer.querySelector('#hours'),
+              minutes = timer.querySelector('#minutes'),
+              seconds = timer.querySelector('#seconds'),
+              timeInterval = setInterval(updateClock, 1000);
 
         updateClock();
 
@@ -99,4 +99,52 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
     setClock('.timer', deadline);
+
+    // Modal
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+          modal = document.querySelector('.modal'),
+          modalCloseBtn = document.querySelector('[data-close]');
+    
+        function openModal() {
+            modal.classList.add('show');
+            modal.classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            clearInterval(modelTimerId);
+        }
+
+        modalTrigger.forEach(btn => {
+            btn.addEventListener('click', openModal);
+        });
+
+        function closeModal(){
+            modal.classList.add('hide');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        modalCloseBtn.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === "Escape" && modal.classList.contains('show')) {
+                closeModal();
+            }
+        });
+
+        const modalTimerId = setTimeout(openModal, 5000);
+
+        function showModelByScroll() {
+            if (window.pageYOffset + document.documenteElement.clientHeight >= document.documentElement.scrollHeight -1) {
+                openModal();
+                removeEventListener('scroll', showModelByScroll);
+            }
+        }
+
+        window.addEventListener('scroll', showModelByScroll);
 });
